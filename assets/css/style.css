@@ -1,3 +1,11 @@
+#timer {
+	display: none;
+}
+
+#next {
+	display: none;
+}
+
 .question-img {
 	height: 400px;
 }

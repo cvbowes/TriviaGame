@@ -78,6 +78,7 @@ $(document).ready(function() {
 		numberCorrect = 0;
 
 		renderQuestion(counter);
+		$("#next").show();
 
 	}
 
@@ -150,6 +151,7 @@ $(document).ready(function() {
 		var score = (numberCorrect/questions.length)*100;
 		var endGameText = "You completed the quiz! Your score is " + score + "% (" + numberCorrect + " out of " + questions.length + " questions correct).";
 		$("#questions").empty().html(endGameText);
+		$("#next").hide();
 	}
 
 	function timeUp() {
@@ -158,16 +160,18 @@ $(document).ready(function() {
 
 		$("#questions").empty().html(endGameText);
 		clearInterval(intervalId);
+		$("#next").hide();
 
 	}
 
 	$("#start").on("click", function() {
+		$("#timer").show();
 		timer.start();
 		gameSetup();
 		$(this).hide();
 	})
 
-	$(document).on("click", ".answer", function(event) {
+	$(document).on("click touchstart", ".answer", function(event) {
 		
 		currentAnswer = $(this);
 		if (currentQuestion.answerSelected === false) {
