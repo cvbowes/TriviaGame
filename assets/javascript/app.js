@@ -1,6 +1,55 @@
 $(document).ready(function() {
 	var q1, q2, q3, q4, q5, q6, q7, q8, q9, q10;
-	var questions, counter, currentQuestion, currentAnswer, numberCorrect;
+	var questions, counter, currentQuestion, currentAnswer, numberCorrect, intervalId;
+
+	var timer = {
+		time: 30,
+
+		resetTime: function() {
+			timer.time = 30;
+			timer.updateDisplay();
+			clearInterval(intervalId);
+		},
+
+		start: function() {
+			timer.updateDisplay();
+			intervalId = setInterval(timer.count, 1000);
+		},
+
+		count: function() {
+			timer.time--;
+			var newTime = timer.convert(timer.time);
+
+			timer.updateDisplay();
+
+			if (timer.time === 0) {
+				timeUp();
+			}
+		},
+
+		updateDisplay: function() {
+			$("#time-display").html(timer.convert(timer.time));
+		},
+
+		convert: function(t) {
+			var minutes = Math.floor(t / 60);
+    		var seconds = t - (minutes * 60);
+
+		    if (seconds < 10) {
+		      seconds = "0" + seconds;
+		    }
+
+		    if (minutes === 0) {
+		      minutes = "00";
+		    }
+
+		    else if (minutes < 10) {
+		      minutes = "0" + minutes;
+		    }
+
+		    return minutes + ":" + seconds;
+		}
+	}
 
 	function triviaQuestion(question, answers, correct, img) {
 		this.question = question;
@@ -17,12 +66,12 @@ $(document).ready(function() {
 		q2 = new triviaQuestion("What is the name of this boss?", ["Diababa", "Jalhalla", "Morpha", "Barinade"], "Barinade","assets/images/boss.png");
 		q3 = new triviaQuestion("This Twilight Princess character's name is derived from the names of the three Golden Goddesses: ", ["Renado", "Queen Rutela", "Midna", "Madame Fanadi"], "Madame Fanadi", "assets/images/goddess.png");
 		q4 = new triviaQuestion("Which of these is not one of the masks Link obtains in Majora's Mask?", ["Bremen Mask", "Mask of Truth", "Postman's Hat", "Gorman's Mask"], "Gorman's Mask", "assets/images/mask.png");
-		q5 = new triviaQuestion("a question", ["this wrong", "this wrong too", "this one also","this right"], "this right","");
-		q6 = new triviaQuestion("an question", ["this wrong", "this wrong too", "this one also", "this right"], "this right","");
-		q7 = new triviaQuestion("another question", ["this wrong", "this wrong too", "this one also", "this right"], "this right","");
-		q8 = new triviaQuestion("last question", ["this wrong", "this wrong too", "this one also", "this right"], "this right","");
-		q9 = new triviaQuestion("jk", ["this wrong", "this wrong too", "this one also", "this right"], "this right","");
-		q10 = new triviaQuestion("real last question", ["this wrong", "this wrong too", "this one also","this right"], "this right","");
+		q5 = new triviaQuestion("In Wind Waker, the Triforce of Courage was split into how many pieces?", ["5", "3", "7","8"], "8","assets/images/triforce.png");
+		q6 = new triviaQuestion("What inspired Shigeru Miyamoto to create The Legend of Zelda?", ["Reading fantasy books as a teenager", "Learning the ways of the sword in his younger days", "A visit to a carnival in Tokyo", "Exploring caves by lantern light as a child"], "Exploring caves by lantern light as a child","assets/images/miyamoto.png");
+		q7 = new triviaQuestion("Which of these is not a recurring enemy in the Legend of Zelda series?", ["Blue Bubble", "Gibdo", "Leever", "Bronze Knuckle"], "Bronze Knuckle","assets/images/enemy.png");
+		q8 = new triviaQuestion("In the original Legend of Zelda game, how many heart containers could Link have by the end of the game?", ["8", "20", "10", "16"], "16","assets/images/heart.png");
+		q9 = new triviaQuestion("How many stray fairies are in each dungeon of Majora's Mask?", ["1", "4", "10", "15"], "15","assets/images/fairy.png");
+		q10 = new triviaQuestion("After which game does the official Legend of Zelda timeline split, and into how many alternate timelines?", ["A Link to the Past; 2", "A Link to the Past; 3", "Ocarina of Time; 2","Ocarina of Time; 3"], "Ocarina of Time; 3","assets/images/link.jpg");
 
 		questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10];
 		counter = 0;
@@ -99,13 +148,25 @@ $(document).ready(function() {
 
 	function endGame() {
 		var score = (numberCorrect/questions.length)*100;
-		var endGameText = "You completed the quiz! Your score is " + score + "%.";
+		var endGameText = "You completed the quiz! Your score is " + score + "% (" + numberCorrect + " out of " + questions.length + " questions correct).";
 		$("#questions").empty().html(endGameText);
 	}
 
-	gameSetup();
+	function timeUp() {
+		var score = (numberCorrect/questions.length)*100;
+		var endGameText = "You ran out of time! Your score is " + score + "%.";
 
-//todo: select parent of element clicked and change answerSelected property of that object
+		$("#questions").empty().html(endGameText);
+		clearInterval(intervalId);
+
+	}
+
+	$("#start").on("click", function() {
+		timer.start();
+		gameSetup();
+		$(this).hide();
+	})
+
 	$(document).on("click", ".answer", function(event) {
 		
 		currentAnswer = $(this);
@@ -131,14 +192,18 @@ $(document).ready(function() {
 			}
 
 			renderQuestion(counter);
+			timer.resetTime();
+			timer.start();
 
 		} else if (currentQuestion.answerSelected && counter === questions.length) {
 			if (isCorrect(currentQuestion.correctAnswer)) {
 				numberCorrect++;
 			}
 			
+			clearInterval(intervalId);
 			endGame();
 		}
+
 		console.log(numberCorrect);
 
 		$('#next').prop('disabled', true);
