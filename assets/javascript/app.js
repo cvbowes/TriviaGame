@@ -78,7 +78,7 @@ $(document).ready(function() {
 		numberCorrect = 0;
 
 		renderQuestion(counter);
-		$("#next").show();
+		$("#next").css("display", "block");
 
 	}
 
@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 		currentQuestion = questions[questionNumber];
 
-		$("#questions").html("<img class='question-img' src=" + currentQuestion.image + ">");
+		$("#questions").html("<img class='question-img img-responsive' src=" + currentQuestion.image + ">");
 		questionDiv.html(currentQuestion.question);
 		answersDiv.html(answerList(currentQuestion));
 		$("#questions").append(questionDiv).append(answersDiv);
@@ -126,17 +126,15 @@ $(document).ready(function() {
 	}
 
 	function select(choice) {
-		choice.css("color", "blue");
+		choice.css({"font-size":"18pt", "background":"#bfc6b8" });
 		choice.attr("id", "selection");
-		//check for correct
-		console.log(choice.html());
 		currentQuestion.answeredCorrectly = isCorrect();
 
 	}
 
 	function deselect(choice) {
 		choice.removeAttr("id", "selection");
-		choice.css("color", "black");
+		choice.css({"font-size":"", "background":""});
 	}
 
 	function isCorrect() {
@@ -150,18 +148,22 @@ $(document).ready(function() {
 	function endGame() {
 		var score = (numberCorrect/questions.length)*100;
 		var endGameText = "You completed the quiz! Your score is " + score + "% (" + numberCorrect + " out of " + questions.length + " questions correct).";
-		$("#questions").empty().html(endGameText);
+		$("#questions").empty().append(endGameDiv(endGameText));
 		$("#next").hide();
 	}
 
 	function timeUp() {
 		var score = (numberCorrect/questions.length)*100;
-		var endGameText = "You ran out of time! Your score is " + score + "%.";
+		var timeUpText = "You ran out of time! Your score is " + score + "%.";
 
-		$("#questions").empty().html(endGameText);
+		$("#questions").empty().append(endGameDiv(timeUpText));
 		clearInterval(intervalId);
 		$("#next").hide();
 
+	}
+
+	function endGameDiv(text) {
+		return $("<div>").addClass("end-game").html(text);
 	}
 
 	$("#start").on("click", function() {
@@ -176,13 +178,11 @@ $(document).ready(function() {
 		currentAnswer = $(this);
 		if (currentQuestion.answerSelected === false) {
 			select(currentAnswer);
-			console.log(currentQuestion.answerSelected);
 			currentQuestion.answerSelected = true;
 			$('#next').prop('disabled', false);
 
 		} else {
 			deselect($("#selection"));
-			console.log(currentQuestion.answerSelected);
 			select(currentAnswer);
 		}
 	});
@@ -207,8 +207,6 @@ $(document).ready(function() {
 			clearInterval(intervalId);
 			endGame();
 		}
-
-		console.log(numberCorrect);
 
 		$('#next').prop('disabled', true);
 	})
