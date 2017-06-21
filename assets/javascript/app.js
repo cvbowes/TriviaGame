@@ -138,12 +138,11 @@ $(document).ready(function() {
 	}
 
 	function isCorrect() {
-		if (currentQuestion.correctAnswer === currentAnswer.html()) {
-			return true;
-
-		} 
-		return false;
-	}
+    // this is a common mistake, a line like this will return
+    // true or false, so you can just return it and it will
+    // resolve to true/false and return that
+		return currentQuestion.correctAnswer === currentAnswer.html() 
+  }
 
 	function endGame() {
 		var score = (numberCorrect/questions.length)*100;
