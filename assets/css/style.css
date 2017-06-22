@@ -2,7 +2,6 @@
 	box-sizing: border-box;
 	border: 1px solid black;
 }
-
 */
 body {
 	background: url("../images/bg.jpg") center top fixed;
@@ -12,12 +11,19 @@ body {
 #header {
 	text-align: center;
 	padding: 20px;
-	font-size: 40px;
-	/*background: url("../images/bg.jpg") center top fixed;*/
+	color: #fff;
+	font-family: 'vt323', monospace;
+	text-shadow: 1px 1px 20px pink, 0 0 2em black, 0 0 0.1em black;
+}
+
+#header h1 {
+	font-size: 50pt;
 }
 
 #start, #next {
 	background: #d9eac7;
+	font-family:'vt323', monospace;
+	font-size: 20pt;
 }
 #start {
 	width: 250px;
@@ -36,12 +42,14 @@ body {
 	background: #ddd;
 	z-index: 999;
 	text-align: center;
+	font-family: 'vt323', monospace;
 	background: url("../images/navi.png") center right no-repeat;
 	background-size: contain;
 }
 
 #time-display {
 	font-size: 24pt;
+	font-family: 'Montserrat', sans-serif;
 }
 
 #next {
@@ -64,6 +72,7 @@ body {
 	display: block;
 	text-align: center;
 	margin-top: 20px;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .trivia-question {
