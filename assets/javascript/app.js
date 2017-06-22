@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	var q1, q2, q3, q4, q5, q6, q7, q8, q9, q10;
 	var questions, counter, currentQuestion, currentAnswer, numberCorrect, intervalId;
-
+	var endImages = [];
 	var timer = {
 		time: 30,
 
@@ -148,22 +148,40 @@ $(document).ready(function() {
 	function endGame() {
 		var score = (numberCorrect/questions.length)*100;
 		var endGameText = "You completed the quiz! Your score is " + score + "% (" + numberCorrect + " out of " + questions.length + " questions correct).";
-		$("#questions").empty().append(endGameDiv(endGameText));
+
+		$("#questions").empty().append(endGameDiv(endGameText, score));
 		$("#next").hide();
 	}
 
 	function timeUp() {
 		var score = (numberCorrect/questions.length)*100;
 		var timeUpText = "You ran out of time! Your score is " + score + "%.";
+		var endImg;
 
-		$("#questions").empty().append(endGameDiv(timeUpText));
+		$("#questions").empty().append(endGameDiv(timeUpText,score));
+
+		
+
 		clearInterval(intervalId);
 		$("#next").hide();
 
 	}
 
-	function endGameDiv(text) {
-		return $("<div>").addClass("end-game").html(text);
+	function endGameDiv(text, score) {
+
+		if (score >= 90) {
+			endImg = "assets/images/great.gif";
+		} else if (score < 90 && score >= 60) {
+			endImg = "assets/images/good.gif";
+		} else if (score < 60 && score >= 30) {
+			endImg = "assets/images/dobetter.gif";
+		} else {
+			endImg = "assets/images/nope.gif";
+		}
+
+		return $("<div>").addClass("end-game").html(text)
+		.append($("<img>").addClass("end-img").attr("src", endImg));
+
 	}
 
 	$("#start").on("click", function() {
@@ -172,6 +190,7 @@ $(document).ready(function() {
 		gameSetup();
 		$(this).hide();
 	})
+
 
 	$(document).on("click touchstart", ".answer", function(event) {
 		
